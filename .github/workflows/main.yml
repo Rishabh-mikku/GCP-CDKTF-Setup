@@ -37,8 +37,9 @@ jobs:
       - name: Install CDKTF CLI
         run: npm install -g cdktf-cli 
 
-      - name: Setup GCP Credentials
-        run: echo "${{ secrets.GCP_SA_KEY }}" > ${{ github.workspace }}/gcp-key.json
+      - name: Decode and Write GCP Credentials
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" | base64 -d > ${{ github.workspace }}/gcp-key.json
 
       - name: Export Credential Path
         run: echo "GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/gcp-key.json" >> $GITHUB_ENV
@@ -88,8 +89,9 @@ jobs:
       - name: Install CDKTF CLI
         run: npm install -g cdktf-cli 
 
-      - name: Setup GCP Credentials
-        run: echo "${{ secrets.GCP_SA_KEY }}" > ${{ github.workspace }}/gcp-key.json
+      - name: Decode and Write GCP Credentials
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" | base64 -d > ${{ github.workspace }}/gcp-key.json
 
       - name: Export Credential Path
         run: echo "GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/gcp-key.json" >> $GITHUB_ENV
