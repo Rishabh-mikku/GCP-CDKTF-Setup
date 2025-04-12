@@ -14,9 +14,6 @@ jobs:
     name: Deploy Infrastructure to GCP
     runs-on: ubuntu-latest
 
-    env:
-      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -41,7 +38,10 @@ jobs:
         run: npm install -g cdktf-cli 
 
       - name: Setup GCP Credentials
-        run: echo "${{ secrets.GCP_SA_KEY }}" > "$GOOGLE_APPLICATION_CREDENTIALS"
+        run: echo "${{ secrets.GCP_SA_KEY }}" > ${{ github.workspace }}/gcp-key.json
+
+      - name: Export Credential Path
+        run: echo "GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/gcp-key.json" >> $GITHUB_ENV
 
       - name: Verify GCP Authentication
         run: |
@@ -65,9 +65,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
 
-    env:
-      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -92,7 +89,10 @@ jobs:
         run: npm install -g cdktf-cli 
 
       - name: Setup GCP Credentials
-        run: echo "${{ secrets.GCP_SA_KEY }}" > "$GOOGLE_APPLICATION_CREDENTIALS"
+        run: echo "${{ secrets.GCP_SA_KEY }}" > ${{ github.workspace }}/gcp-key.json
+
+      - name: Export Credential Path
+        run: echo "GOOGLE_APPLICATION_CREDENTIALS=${{ github.workspace }}/gcp-key.json" >> $GITHUB_ENV
 
       - name: Verify GCP Authentication
         run: |
