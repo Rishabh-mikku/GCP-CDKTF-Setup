@@ -37,6 +37,11 @@ jobs:
       - name: Install CDKTF CLI
         run: npm install -g cdktf-cli 
 
+      - name: Install Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5 # You can specify the version you want
+
       - name: Decode and Write GCP Credentials
         run: |
           echo "${{ secrets.GCP_SA_KEY }}" | base64 -d > ${{ github.workspace }}/gcp-key.json
@@ -88,6 +93,11 @@ jobs:
 
       - name: Install CDKTF CLI
         run: npm install -g cdktf-cli 
+
+      - name: Install Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5 # Match the deploy version
 
       - name: Decode and Write GCP Credentials
         run: |
