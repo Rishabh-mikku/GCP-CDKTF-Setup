@@ -20,8 +20,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          path: .
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -38,9 +36,10 @@ jobs:
 
       - name: Install NPM dependencies
         run: npm install
+        working-directory: ./GCP-CDKTF-Setup
 
       - name: Install CDKTF CLI
-        run: npm install -g cdktf-cli 
+        run: npm install -g cdktf-cli
 
       - name: Setup GCP Credentials
         run: echo "${{ secrets.GCP_SA_KEY }}" > $GOOGLE_APPLICATION_CREDENTIALS
@@ -52,15 +51,18 @@ jobs:
 
       - name: Initialize CDKTF
         run: cdktf get
+        working-directory: ./GCP-CDKTF-Setup
 
       - name: Synthesize Terraform Configuration
         run: cdktf synth
+        working-directory: ./GCP-CDKTF-Setup
 
       - name: Deploy Infrastructure
         run: cdktf deploy --auto-approve
+        working-directory: ./GCP-CDKTF-Setup
 
       - name: Deployment Successful
-        run: echo "Infrastructure deployed successfully!!!"
+        run: echo "Infrastructure deployed successfully!"
 
   destroy:
     name: Destroy Infrastructure (Manual Trigger)
@@ -73,8 +75,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          path: .
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -91,9 +91,10 @@ jobs:
 
       - name: Install NPM dependencies
         run: npm install
+        working-directory: ./GCP-CDKTF-Setup
 
       - name: Install CDKTF CLI
-        run: npm install -g cdktf-cli 
+        run: npm install -g cdktf-cli
 
       - name: Setup GCP Credentials
         run: echo "${{ secrets.GCP_SA_KEY }}" > $GOOGLE_APPLICATION_CREDENTIALS
@@ -105,9 +106,11 @@ jobs:
 
       - name: Initialize CDKTF
         run: cdktf get
+        working-directory: ./GCP-CDKTF-Setup
 
       - name: Destroy Infrastructure
         run: cdktf destroy --auto-approve
+        working-directory: ./GCP-CDKTF-Setup
 
       - name: Destroy Successful
-        run: echo "Infrastructure destroyed successfully!!!"
+        run: echo "Infrastructure destroyed successfully!"
