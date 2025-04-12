@@ -41,7 +41,7 @@ jobs:
         run: npm install -g cdktf-cli 
 
       - name: Setup GCP Credentials
-        run: echo "${{ secrets.GCP_SA_KEY }}" > $GOOGLE_APPLICATION_CREDENTIALS
+        run: echo "${{ secrets.GCP_SA_KEY }}" > "$GOOGLE_APPLICATION_CREDENTIALS"
 
       - name: Verify GCP Authentication
         run: |
@@ -92,7 +92,7 @@ jobs:
         run: npm install -g cdktf-cli 
 
       - name: Setup GCP Credentials
-        run: echo "${{ secrets.GCP_SA_KEY }}" > $GOOGLE_APPLICATION_CREDENTIALS
+        run: echo "${{ secrets.GCP_SA_KEY }}" > "$GOOGLE_APPLICATION_CREDENTIALS"
 
       - name: Verify GCP Authentication
         run: |
