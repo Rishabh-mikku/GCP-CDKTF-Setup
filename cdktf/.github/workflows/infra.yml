@@ -1,0 +1,106 @@
+name: GCP CDKTF Infrastructure Deployment
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        name: Deploy Infrastructure to GCP
+        runs-on: ubuntu-latest
+
+        env:
+            GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+        
+        steps:
+            # Checkout repository
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            # Setup Node.js
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: '18'
+            
+            # Install dependencies
+            - name: Install NPM dependencies
+              run: npm install
+            
+            # Install cdktf CLI
+            - name: Install CDKTF CLI
+              run: nom install -g cdktf-cli
+            
+            # Authenticate with GCP using service account
+            - name: Setup GCP Credentials
+              run: |
+                echo "${{ secrets.GCP_SA_KEY }}" > $GOOGLE_APPLICATION_CREDENTIALS
+            
+            # Verify GCP Authentication
+            - name: Verify GCP Authentication
+              run: |
+                gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                gcloud info
+            
+            # Bootstrap CDKTF
+            - name: Initialize CDKTF
+              run: cdktf get
+            
+            # Synthesize Terraform configuration
+            - name: Synthesize Terraform Configuration
+              run: cdktf synth
+            
+            # Deploy Infrastructure
+            - name: Deploy Infrastructure
+              run: cdktf deploy --auto-approve
+
+            # Post-deployment success message
+            - name: Deployment Successful
+              run: echo "Infrastructure deployed successfully!!!"
+    
+    # Destroy job
+    destroy:
+        name: Destroy Infrastructure (Manual Trigger)
+        runs-on: ubuntu-latest
+        if: github.event_name == 'workflow_dispatch'
+
+        env:
+            GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+            
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                node-version: '18'
+            
+            - name: Install NPM dependencies
+              run: npm install
+            
+            - name: Install CDKTF CLI
+              run: npm install -g cdktf-cli
+
+            - name: Setup GCP Credentials
+              run: |
+                echo "${{ secrets.GCP_SA_KEY }}" > $GOOGLE_APPLICATION_CREDENTIALS
+            
+            - name: Verify GCP Authentication
+              run: |
+                gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                gcloud info
+            
+            - name: Initialize CDKTF
+              run: cdktf get
+            
+            - name: Destroy Infrastructure
+              run: cdktf destroy --auto-approve
+            
+            - name: Destroy Successful
+              run: echo "Infrastructure destroyed successfully!!!"
+              
